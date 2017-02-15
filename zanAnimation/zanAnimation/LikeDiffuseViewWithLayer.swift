@@ -8,8 +8,21 @@
 
 import UIKit
 
+/*
+    基本思路：
+ ① 点赞图片的放大，缩小
+ ② 点赞图片的颜色渐变
+ ③ 点赞图片的摇摆
+ ④ 红色圆点的显示，分裂，位移，缩小，消失
+ 简书： http://www.jianshu.com/p/1d637738638e
+ */
+
 class LikeDiffuseViewWithLayer: UIView {
 
+    /*
+     * CALayer 用来处理圆点图片
+     * 这里实现比较low，我创建了 6个 CALayer，分别代表6个方向上的圆点
+     */
     var layer1: CALayer!
     var layer2: CALayer!
     var layer3: CALayer!
@@ -25,6 +38,7 @@ class LikeDiffuseViewWithLayer: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        // UI初始化方法
         setupUI()
         setupCircleViewUI()
     }
@@ -33,7 +47,8 @@ class LikeDiffuseViewWithLayer: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+
+    // 按钮点击方法
     func clickBtnAction(btn: UIButton) {
         
         circleViewMove()
@@ -42,14 +57,17 @@ class LikeDiffuseViewWithLayer: UIView {
         likeImageView.hidden = false
         
         UIView.animateWithDuration(1, animations: {
+            // 放大动画
             self.likeImageView.transform = CGAffineTransformMakeScale(1.2, 1.2)
             self.likeImageView.transform = CGAffineTransformRotate(self.likeImageView.transform, -0.1)
             self.likeImageView.tintColor = UIColor.orangeColor() //UIColor(colorLiteralRed: 246, green: 96, blue: 97, alpha: 1.0) // UIColor.orangeColor()
         }) { (finished) in
             UIView.animateWithDuration(1, animations: {
+                // 缩小动画
                 self.likeImageView.transform = CGAffineTransformMakeScale(1.0, 1.0)
                 self.likeImageView.transform = CGAffineTransformRotate(self.likeImageView.transform, 0.1)
                 }, completion: { (finished) in
+                    // 结束之后，复原
                     UIView.animateWithDuration(0.25, animations: {
                         self.likeImageView.transform = CGAffineTransformMakeRotation(0)
                         }, completion: { (finished) in
@@ -94,6 +112,7 @@ class LikeDiffuseViewWithLayer: UIView {
         
         let originalPoint: CGPoint = CGPoint(x: self.bounds.origin.x, y: self.bounds.origin.y + 5)
         
+        // 6个圆点的位移动画
         let animationPoint = CAKeyframeAnimation(keyPath: "position")
         animationPoint.values = [ NSValue.init(CGPoint: originalPoint),
                               NSValue.init(CGPoint: CGPoint(x: moveX1, y: moveY1))
@@ -131,6 +150,7 @@ class LikeDiffuseViewWithLayer: UIView {
         self.layer6.addAnimation(animationPoint, forKey: "position1")
         
         
+        // 圆点消失时的缩放动画
         let animationScale = CAKeyframeAnimation(keyPath: "transform.scale")
         animationScale.values = [ 1, 0.01]
         animationScale.keyTimes = [0, 1]

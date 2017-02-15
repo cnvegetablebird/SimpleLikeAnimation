@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // 这里实现了两种方式： UIView  CALayer 
 //        let frame = CGRect(x: 200, y: 300, width: 20, height: 20)
 //        likeDiffuseView = LikeDiffuseView(frame: frame)
 //        self.view.addSubview(likeDiffuseView)
